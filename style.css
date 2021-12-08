@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Freckle+Face&family=Lato:wght@300&display=swap');
+
+*{
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+}
+.bold{
+  font-weight: bold;
+}
+header{
+  margin-bottom: 20px;
+}
+#logo{
+  height: 100px;
+}
+body{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin:40px;
+}
+#search_bar{
+  height:69px;
+  width: 100%;
+  border-radius: 5px;
+  position: relative;
+  background-color: #E7E7E7;
+}
+#search_bar input{
+  background-color: transparent;
+  height: 50%;
+  width: 90%;
+  border: none;
+  border-radius: 5px;
+  text-align: left;
+  transform: translate(-4%,50%);
+}
+#search_bar .fas{
+  position: absolute;
+  top:20px;
+  right:20px;
+  font-size: 32px;
+}
+
+#search_tags{
+  height: 37px;
+  width: 90vw;
+  border-radius: 5px;
+}
+#menus{
+  display: flex;
+  justify-content: flex-start;
+}
+.search_menu{
+  display: inline-flex;
+  padding-left: 26px;
+  height: 69px;
+  width: 170px;
+  border-radius: 5px;
+  color: white;
+  margin-right: 20px ;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+.search_menu .fas{
+  position: absolute;
+  left: 170px;
+  font-size: 14px;
+}
+
+#ingredients{
+  background-color: #3282F7;
+}
+#appareil{
+background-color: #68D9A4;
+}
+#ustensiles{
+  background-color: #ED6454;
+}
+
+/************RECIPIES CONTAINER***************/
+#recipies_container{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between
+}
+.a_recipe{
+  margin: 50px 0;
+  width: 28%;
+  height: 364px;
+  max-width: 380px;
+  border-radius: 5px;
+  background-color: #E7E7E7;
+  border: solid 1px rosybrown;
+}
+.recipe_pic{
+  height: 50%;
+  background-color: #C7BEBE ;
+}
+
+.recipe_top{
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 20px 10px 20px;
+  height: 42px;
+}
+.recipe_name,
+.recipe_time{
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21,6px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.recipe_time{
+  font-weight: bold;
+}
+.recipe_bottom{
+  height: 90px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 20px;
+}
+.recipe_ingredients,
+.recipe_description{
+  text-align: left;
+  width: 48%;
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
+}
+.recipe_ingredients{
+  line-height: 14,4px;
+}
