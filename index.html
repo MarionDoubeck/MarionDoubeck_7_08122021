@@ -13,26 +13,37 @@
     <img id='logo' src="./icone.png" alt="icone les petits plats">
   </header>
   <main>
-    <div id="search_bar">
-      <input type="text" placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"></input>
+    <div id="search_bar_div">
+      <input id="search_bar" type="text" placeholder="Rechercher un ingrédient, appareil, ustensiles ou une recette"></input>
       <i class="fas fa-search" aria-hidden="true"></i>
     </div>
     <div id="search_tags"></div>
     <div id="menus"><!--Les trois menus colorés-->
-      <div class="search_menu" id="ingredients">Ingrédients
+      <div class="search_menu" id="ingredients">
+        <span>Ingrédients</span>
+        <input id="search_bar_ingredients" type="text" placeholder="Rechercher un ingrédient"></input>
         <i class="fas fa-chevron-up" aria-hidden="true"></i>
+        <div class="list" id="ingredients_list"></div>
       </div>
-      <div class="search_menu" id="appareil">Appareil
+      <div class="search_menu" id="appliance">
+        <span>Appareil</span>
+        <input id="search_bar_appliance" type="text" placeholder="Rechercher un appareil"></input>
         <i class="fas fa-chevron-up" aria-hidden="true"></i>
+        <div class="list" id="appliance_list"></div>
       </div>
-      <div class="search_menu" id="ustensiles">Ustensiles
+      <div class="search_menu" id="ustensils">
+        <span>Ustensiles</span>
+        <input id="search_bar_ustensils" type="text" placeholder="Rechercher un ustensile"></input>
         <i class="fas fa-chevron-up fa-bold" aria-hidden="true"></i>
+        <div class="list" id="ustensils_list"></div>
       </div>
     </div>
     <!-- là où seront les fiches recettes-->
     <div id="recipies_container"></div>
   </main>
+  <script src="https://kit.fontawesome.com/892f98a91b.js" crossorigin="anonymous"></script>
   <script src="recipies.js"></script>
+  <script src="functions.js"></script>
   <script src="recipe_DOM_factory.js"></script>
   <script src="main.js"></script>
 </body>
