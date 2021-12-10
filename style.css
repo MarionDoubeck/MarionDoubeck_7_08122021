@@ -22,6 +22,11 @@ body{
   align-items: center;
   margin:40px;
 }
+a,
+a:visited{
+  color: white;
+  text-decoration: none;
+}
 #search_bar_div{
   height:69px;
   width: 100%;
