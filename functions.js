@@ -320,7 +320,7 @@ function open_modal(e,recipies){
       <div>Appareil : ${recipe.appliance}<br></div>
       <div>Ustensiles : ${recipe.ustensils}<br></div>
     </div>
-    <div>
+    <div id="modal_right">
       <div id="modal_name">${recipe.name}</div>
       <div id="modal_description">${recipe.description}</div>
     </div>
