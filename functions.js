@@ -50,7 +50,7 @@ function filter_recipies(recipies){
   let addIt=0;
   for (let recipe of recipies){
     for(let tag of list_of_displayed_tags){
-      tag=tag.toLowerCase();
+      tag.name=tag.name.toLowerCase();
       if(tag.type=='appliance'){
         item=recipe[tag.type].toLowerCase();
         if (item==tag.name){
