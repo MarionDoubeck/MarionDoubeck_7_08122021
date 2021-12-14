@@ -35,7 +35,6 @@ function init_list_of_tags(list_of_recipies){
   return list_of_tags
 }
 ////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
 function filter_recipies(recipies){
   console.log('dans filter_recipies');
   let list_of_displayed_tags=[];
@@ -217,7 +216,6 @@ function display_recipies(sorted_recipies_list,recipies){
     filter_advanced_search_fields(type,sorted_recipies_list,recipies);
   }
   document.querySelectorAll('.a_recipe').forEach(element => {
-    console.log("j'entends")
     element.addEventListener('click',(e)=>open_modal(e,recipies))
   });
 }
@@ -281,25 +279,14 @@ function erase(e){
   document.getElementById("search_bar_"+e.target.parentNode.id).value="";
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function erase_search_bar(){
+function erase_search_bar(recipies){
   document.getElementById("search_bar").value="";
+  filter_recipies(recipies)
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function open_modal(e,recipies){
-  let recipe_id=0;
-  if(e.target.parentNode.id.split("_")[1]==undefined){
-    if(e.target.parentNode.parentNode.id.split("_")[1]==undefined){
-      if(e.target.className=="a_recipe"){
-        recipe_id=e.target.id.split("_")[1];
-      }else{
-        recipe_id=e.target.parentNode.parentNode.parentNode.id.split("_")[1];
-      }
-    }else{
-      recipe_id=e.target.parentNode.parentNode.id.split("_")[1];
-    }
-  }else{
-    recipe_id=e.target.parentNode.id.split("_")[1];
-  }
+  let recipe_id=e.target.closest(".a_recipe").id.split("_")[1];
+  console.log(recipe_id);
   document.getElementById('chosen_recipe').classList.remove("hidden");
   if(recipe_id!=0){
     let recipe={};
