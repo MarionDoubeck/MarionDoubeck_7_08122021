@@ -35,6 +35,7 @@ function init_list_of_tags(list_of_recipies){
   return list_of_tags
 }
 ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 function filter_recipies(recipies){
   console.log('dans filter_recipies');
   let list_of_displayed_tags=[];
@@ -83,7 +84,6 @@ function filter_recipies(recipies){
     display_recipies(newList,recipies);
     return
   }
-  //couper research en plusieurs mots avec les espaces
   let newList2=[];
   number_of_recipies=recipies.length;
   for (let i=0;i<number_of_recipies;i++){
@@ -216,6 +216,10 @@ function display_recipies(sorted_recipies_list,recipies){
   for (type of ['ingredients','appliance','ustensils']){
     filter_advanced_search_fields(type,sorted_recipies_list,recipies);
   }
+  document.querySelectorAll('.a_recipe').forEach(element => {
+    console.log("j'entends")
+    element.addEventListener('click',(e)=>open_modal(e,recipies))
+  });
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function display_clickable_advanced_field(type,list_of_the_field,recipies){
@@ -296,7 +300,6 @@ function open_modal(e,recipies){
   }else{
     recipe_id=e.target.parentNode.id.split("_")[1];
   }
-  console.log(recipies);
   document.getElementById('chosen_recipe').classList.remove("hidden");
   if(recipe_id!=0){
     let recipe={};
@@ -310,7 +313,6 @@ function open_modal(e,recipies){
     for (item of recipe.ingredients){
       list_of_ingredients.push('</br>'+item.ingredient);
     }
-    console.log('ici');
     document.querySelector('.recipe_content').innerHTML=`
     <div id="recipe_info">
       <img id='cooking' src="./cooking.jpg">

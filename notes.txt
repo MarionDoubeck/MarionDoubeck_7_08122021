@@ -1,6 +1,0 @@
-La methode par fonctions array
-/////////////////
-Les tests de rapidité
-Les tests sur firefox, W3machin
-Demander la validation
-Faire le power point
