@@ -208,7 +208,7 @@ function display_recipies(sorted_recipies_list,recipies){
   }else{
     let recipeCardHtml="";
     for(const recipe of sorted_recipies_list){ 
-      const recipeModel=recipe_factory(recipe,recipeCardHtml);
+      const recipeModel=recipe_factory(recipe,recipeCardHtml,recipies);
       recipeCardHtml=recipeModel.getRecipeCardDOM();
     }
     recipiesContainer.innerHTML=recipeCardHtml;
@@ -281,9 +281,46 @@ function erase_search_bar(){
   document.getElementById("search_bar").value="";
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function open_modal(name){
+function open_modal(e,recipies){
+  let recipe_id=0;
+  if(e.target.parentNode.id.split("_")[1]==undefined){
+    if(e.target.parentNode.parentNode.id.split("_")[1]==undefined){
+      if(e.target.className=="a_recipe"){
+        recipe_id=e.target.id.split("_")[1];
+      }else{
+        recipe_id=e.target.parentNode.parentNode.parentNode.id.split("_")[1];
+      }
+    }else{
+      recipe_id=e.target.parentNode.parentNode.id.split("_")[1];
+    }
+  }else{
+    recipe_id=e.target.parentNode.id.split("_")[1];
+  }
+  console.log(recipies);
   document.getElementById('chosen_recipe').classList.remove("hidden");
-  document.querySelector('.recipe_content').innerHTML=name;
+  if(recipe_id!=0){
+    let recipe={};
+    for(element of recipies){
+      if (element.id==recipe_id){
+        recipe=element;
+        break
+      }
+    }
+    let list_of_ingredients=[];
+    for (item of recipe.ingredients){
+      list_of_ingredients.push(item.ingredient);
+    }
+    console.log('ici');
+    document.querySelector('.recipe_content').innerHTML=`
+    <div>${recipe.name}</div>
+    <div>Pour ${recipe.servings} personnes</div>
+    <div>Temps de préparation : ${recipe.time} minutes</div>
+    <div>Ingredients : ${list_of_ingredients}</div>
+    <div>Appareil : ${recipe.appliance}</div>
+    <div>Ustensiles : ${recipe.ustensils}</div>
+    <div>Instructions : ${recipe.description}</div>
+    `;
+  }
   document.getElementById('close_button').addEventListener("click",()=>{
     document.getElementById('chosen_recipe').classList.add("hidden");
   })
