@@ -2,15 +2,28 @@ function init_list_of_tags(list_of_recipies){
   console.log('dans init_list_of_tags');
   let list_of_tags=[];
   let tag=new Tag;
+  let len=0;
   for (const recipe of list_of_recipies){
-    for (let i=0;i<recipe['ingredients'].length;i++){
-      tag=new Tag(recipe['ingredients'][i]['ingredient'.toLowerCase()],'ingredients');
-      if(list_of_tags.find(element=>(element.name==tag.name && element.type=='ingredients'))==undefined){
-        list_of_tags.push(tag);
-      }
+    for(let i=0;i<recipe.ingredients.length;i++){
+      tag=new Tag(recipe['ingredients'][i]['ingredient'].toLowerCase(),'ingredients');
+      let alreadyIn=0;
+        for (let k=0;k<list_of_tags.length;k++){
+          if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="ingredients"){
+            alreadyIn++;
+          }
+        }
+        if (alreadyIn==0){
+          list_of_tags.push(tag);
+        }
     }
     tag=new Tag(recipe['appliance'].toLowerCase(),'appliance');
-    if(list_of_tags.find(element=>(element.name==tag.name && element.type=='appliance'))==undefined){
+    let alreadyIn=0;
+    for(let k=0;k<list_of_tags.length;k++){
+      if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="appliance"){
+        alreadyIn++;
+      }
+    }
+    if (alreadyIn==0){
       list_of_tags.push(tag);
     }
     for (let i=0;i<recipe['ustensils'].length;i++){
@@ -20,204 +33,258 @@ function init_list_of_tags(list_of_recipies){
       }
     }
   }
-  console.log(list_of_tags);
   return list_of_tags
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function erase_search_bar(){
-  console.log('dans erase_search_bar');
-  document.getElementById('search_bar').value="";
-}
-////////////////////////////////////////////////////////////////////////////////////
-function isInTag(value,list_of_tags){
-  console.log('dans isInTag');
-  value=value.toLowerCase()
-  let test=0;
-  let list_of_possible_tags=[];
-  for (type of ['ingredients','appliance','ustensils']){
-    for (tag of list_of_tags){
-      if((tag.name).includes(value)){
-        test=1;
-        if(list_of_possible_tags.find((element)=>(element.name==tag.name && element.type==tag.type))==undefined){
-          list_of_possible_tags.push(tag);
+function filter_recipies(recipies){
+  console.log('dans filter_recipies');
+  let list_of_displayed_tags=[];
+  let list=document.querySelectorAll(".aTag");
+  list.forEach(displayed_tag => {
+    let aTag=new Tag(displayed_tag.innerText,displayed_tag.classList[1]);
+    list_of_displayed_tags.push(aTag);
+  });
+  
+  //filter by tags :
+  let newList=[];
+  let item="";
+  let addIt=0;
+  for (let recipe of recipies){
+    for(let tag of list_of_displayed_tags){
+      if(tag.type=='appliance'){
+        item=recipe[tag.type].toLowerCase();
+        if (item==tag.name){
+          addIt++;
+        }
+      }else{
+        for(let temp of recipe[tag.type]){
+          if(tag.type=="ingredients"){
+            item=temp['ingredient'].toLowerCase();
+            if (item==tag.name){
+              addIt++;
+            }
+          }else{
+            item=temp.toLowerCase();
+            if (item==tag.name){
+              addIt++;
+            }
+          }
         }
       }
     }
+    if(addIt==list_of_displayed_tags.length){
+      newList.push(recipe);
+    }
+    addIt=0;
   }
-  if (test==0){
-    return [false,'not a tag !']
-  }else{
-    return [true,list_of_possible_tags]
-  }
-}
-////////////////////////////////////////////////////////////////////////////////////
-function filter_recipies(sorted_recipies_list,list_of_displayed_tags){
-  console.log('dans filter_recipies');
-  //filter by tags :
-  const number_of_recipies=sorted_recipies_list.length;
-  newList=[];
-  for (let i=0;i<number_of_recipies;i++){
-    let keep_it=0;
-    for (ingredient of sorted_recipies_list[i]['ingredients']){
-      if (list_of_displayed_tags.find(element=>(element.type=='ingredients' && element.name==ingredient))!=undefined){
-        keep_it++;
-      }
-    }
-    for (appliance of sorted_recipies_list[i]['appliance']){
-      if (list_of_displayed_tags.find(element=>(element.type=='appliance' && element.name==appliance))!=undefined){
-        keep_it++;
-      }
-    }
-    for (ustensil of sorted_recipies_list[i]['ustensils']){
-      if (list_of_displayed_tags.find(element=>(element.type=='ustensils' && element.name==ustensil))!=undefined){
-        keep_it++;
-      }
-    }
-    if (keep_it>0){
-      newList.push(sorted_recipies_list[i])
-    }
-  }
-  if (newList==[]){
-    display_no_result();
+  //filter par la barre de recherche
+  const research=document.getElementById('search_bar').value;
+  if (research.length==0){
+    display_recipies(newList,recipies);
     return
-  }else{
-    //filter par la barre de recherche
-    const research=document.getElementById('search_bar').value;
-    //couper research en plusieurs mots avec les espaces
-    const number_of_recipies=sorted_recipies_list.length;
-    for (let i=0;i<number_of_recipies;i++){
-      const title=sorted_recipies_list[i].name;
-      const ingredients=sorted_recipies_list[i].ingredients;
-      const description=sorted_recipies_list[i].description;
-      if (title.includes(research) || ingredients.includes(research) || description.includes(research)){
-        newList.push(sorted_recipies_list[i]);
-      }
-    }
-    if (newList==[]){
-      display_no_result();
-      return
-    }else{
-      display_recipies(newList);
-      return
+  }
+  //couper research en plusieurs mots avec les espaces
+  let newList2=[];
+  number_of_recipies=recipies.length;
+  for (let i=0;i<number_of_recipies;i++){
+    const title=recipies[i].name;
+    const ingredients=recipies[i].ingredients;
+    const description=recipies[i].description;
+    if (title.includes(research) || ingredients.includes(research) || description.includes(research)){
+      newList2.push(recipies[i]);
     }
   }
+  let sorted_recipies_list=[];
+  for(recipe of newList){
+    for(recipe2 of newList2){
+      if(recipe==recipe2){
+        sorted_recipies_list.push(recipe);
+      }
+    }
+  }
+    display_recipies(sorted_recipies_list,recipies);
+    return
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function filter_advanced_search_fields(type,sorted_recipies_list,list_of_displayed_tags){
+function filter_advanced_search_fields(type,sorted_recipies_list,recipies){
   console.log('dans filter_advanced_search_fields de type '+type);
   //trier le menu en ne gardant que ce qu'il y a dans la liste de recettes :
   switch (type){
     case 'ingredients':
-      advanced_research=document.getElementById('search_bar_ingredients').value;
-      //HtmlContent=[];
       list_of_the_field=[];
       for(recipe of sorted_recipies_list){
         for(nb_of_ingredients in recipe.ingredients){
-          const myIngredient=recipe.ingredients[nb_of_ingredients].ingredient;
-          if(list_of_the_field.find(element=>element==(myIngredient,'ingredients'))==undefined){
-            //trier en plus par le champ de recherche avancée
-            //if(recipe.ingredients[nb_of_ingredients].ingredient.includes(advanced_research)){
-            //HtmlContent.push(myIngredient);
+          const myIngredient=recipe.ingredients[nb_of_ingredients].ingredient.toLowerCase();
+          let alreadyIn=0;
+          for(element of list_of_the_field){
+            if(element.name==myIngredient){
+              alreadyIn++;
+            }
+          }
+          if(alreadyIn==0){
             list_of_the_field.push(new Tag(myIngredient,'ingredients'))
-          //}
           }
         }
       }
-      //HtmlContent=[... new Set(HtmlContent)];
-      display_clickable_advanced_field(type,list_of_the_field,list_of_displayed_tags);
+      display_clickable_advanced_field(type,list_of_the_field,recipies);
       break
     case 'appliance':
       advanced_research=document.getElementById('search_bar_appliance').value;
-      HtmlContent=[];
       list_of_the_field=[];
       for(recipe of sorted_recipies_list){
-        //trier en plus par le champ de recherche avancée
-        //if(recipe.appliance.includes(advanced_research)){
-          HtmlContent.push(recipe.appliance);
-          list_of_the_field.push(new Tag(recipe.appliance,'appliance'))
-        //}
+        const myAppliance=recipe.appliance.toLowerCase();
+        alreadyIn=0;
+        for(element of list_of_the_field){
+          if(element.name==myAppliance){
+            alreadyIn++;
+          }
+        }
+        if(alreadyIn==0){
+          list_of_the_field.push(new Tag(myAppliance,'appliance'));
+        }
       }
-      HtmlContent=[... new Set(HtmlContent)];
-      display_clickable_advanced_field(type,list_of_the_field,list_of_displayed_tags);
+      display_clickable_advanced_field(type,list_of_the_field,recipies);
       break
     case 'ustensils':
-      advanced_research=document.getElementById('search_bar_ustensils').value;
-      HtmlContent=[];
       list_of_the_field=[];
       for(recipe of sorted_recipies_list){
         for(nb_of_ustensils in recipe.ustensils){
-          //trier en plus par le champ de recherche avancée
-          //if(recipe.ustensils[nb_of_ustensils].includes(advanced_research)){
-            HtmlContent.push(recipe.ustensils[nb_of_ustensils]);
-            list_of_the_field.push(new Tag(recipe.ustensils[nb_of_ustensils],'ustensils'));
-          //}
+          const myUstensil=recipe.ustensils[nb_of_ustensils].toLowerCase();
+          let alreadyIn=0;
+          for(element of list_of_the_field){
+            if(element.name==myUstensil){
+              alreadyIn++;
+            }
+          }
+          if(alreadyIn==0){
+            list_of_the_field.push(new Tag(myUstensil,'ustensils'))
+          }
         }
       }
-      HtmlContent=[... new Set(HtmlContent)];
-      display_clickable_advanced_field(type,list_of_the_field,list_of_displayed_tags);
+      display_clickable_advanced_field(type,list_of_the_field,recipies);
       break
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function filter_advanced_search_fields_from_advanced_search_bar(type,list_of_tags,list_of_displayed_tags,tagName){
+function filter_advanced_search_fields_from_advanced_search_bar(type,list_of_tags,recipies){
   console.log('dans filter(and display)advanced search fields from advanced search bar');
-  research=document.getElementById('search_bar_'+type);
-  to_display="";
+  research=document.getElementById('search_bar_'+type).value;
+  if(research.length==0){
+    filter_recipies(recipies);
+  }
+  let i=0;
+  let list_of_the_field=[];
   for (tag of list_of_tags){
-    if (tag.name.includes(research)){
-      to_display+='<a href=# onclick=display_tags('+list_of_displayed_tags+','+type+','+tag.name+'>'+tag.name+'<\a>';
-    }
-    if (tagName!=undefined && tag.name.includes(tagName)){
-      to_display+='<a href=# onclick=display_tags('+list_of_displayed_tags+','+type+','+tag.name+'>'+tag.name+'<\a>';
+    if(tag.type==type && research.length<=tag.name.length){
+      for(i=0;i+research.length<=tag.name.length;i++){
+        let test=0;
+        for (j=0;j<research.length;j++){
+          if(tag.name[i+j]==research[j]){
+            test++;
+          }
+        }
+        if(test==research.length){
+          list_of_the_field.push(tag);
+          break
+        }
+      }
     }
   }
-  document.getElementById(type+'_list').innerHTML=to_display;
+  display_clickable_advanced_field(type,list_of_the_field,recipies)
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function display_no_result(){
   console.log('dans display_no_result');
-  document.getElementById('recipies_container').innerHTML='Aucune recette ne correspond à votre critère... Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
+  document.getElementById("recipies_container").innerHTML="Aucune recette ne correspond à votre critère... Vous pouvez chercher 'tarte aux pommes', 'poisson', etc.";
+  
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function display_recipies(sorted_recipies_list,list_of_displayed_tags){
+function display_recipies(sorted_recipies_list,recipies){
   console.log('dans display_recipies');
   const recipiesContainer=document.getElementById("recipies_container");
   recipiesContainer.innerHTML="";
-  let recipeCardHtml="";
-  for(const recipe of sorted_recipies_list){ 
-    const recipeModel=recipe_factory(recipe,recipeCardHtml);
-    recipeCardHtml=recipeModel.getRecipeCardDOM();
+  if(sorted_recipies_list.length==0){
+    display_no_result();
+  }else{
+    let recipeCardHtml="";
+    for(const recipe of sorted_recipies_list){ 
+      const recipeModel=recipe_factory(recipe,recipeCardHtml);
+      recipeCardHtml=recipeModel.getRecipeCardDOM();
+    }
+    recipiesContainer.innerHTML=recipeCardHtml;
   }
-  recipiesContainer.innerHTML=recipeCardHtml;
-  //addeventlistener =>open modal
   for (type of ['ingredients','appliance','ustensils']){
-    filter_advanced_search_fields(type,sorted_recipies_list,list_of_displayed_tags);
+    filter_advanced_search_fields(type,sorted_recipies_list,recipies);
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function display_clickable_advanced_field(type,list_of_the_field,list_of_displayed_tags){
+function display_clickable_advanced_field(type,list_of_the_field,recipies){
   console.log('dans display_clickable_advanced_field');
-  for(tag of list_of_the_field){
-    document.getElementById(type+'_list').innerHTML+='<a href=# onclick="display_tags('+list_of_displayed_tags+','+tag.type+','+tag.name+')">'+tag.name+'</a><br>';
-  }
-}
-////////////////////////////////////////////////////////////////////////////////////
-function display_tags(list_of_displayed_tags,type,newTag){
-  console.log('dans display_tags');
-  console.log("my displayed tags : "+list_of_displayed_tags.ingredients);
-  console.log(type+' '+newTag);
-  list_of_displayed_tags[type].push(newTag);
-  list_of_displayed_tags[type]=[... new Set(list_of_displayed_tags[type])];
-  tagCardHtml='';
-  for (type of ['ingredients','appliance','ustensils']){
-    for (let i=0; i<list_of_displayed_tags[type].length;i++){
-      tagCardHtml+=`<span class="aTag">${list_of_displayed_tags[type][i]} <i class="fas fa-times"></i></span>`
+  let list_of_displayed_tags=[];
+  let list=document.querySelectorAll(".aTag");
+  list.forEach(displayed_tag => {
+    let aTag=new Tag(displayed_tag.textContent,displayed_tag.classList[1]);
+    list_of_displayed_tags.push(aTag);
+  });
+  document.getElementById(type+'_list').innerHTML="";
+  for(let i=0;i<list_of_the_field.length;i++){;
+    let tag=list_of_the_field[i];
+    let dont=0;
+    for(aTag of list_of_displayed_tags){
+      if(aTag.type==tag.type && aTag.name==tag.name){
+        dont++;
+      }
+    }
+    if(dont==0){
+      let newItem=document.createElement("div");
+    newItem.className="tags_in_menu";
+    newItem.textContent=tag.name;
+    document.getElementById(type+'_list').appendChild(newItem); 
+    newItem.addEventListener('click',()=>display_tags(list_of_the_field[i],recipies));  
     }
   }
-  document.getElementById('search_tags').innerHTML=tagCardHtml;
-  return list_of_displayed_tags;
 }
 ////////////////////////////////////////////////////////////////////////////////////
-function open_modal(){
-  console.log('dans open_modal');
+function display_tags(newTag,recipies){
+  console.log('dans display_tags, j\'ajoute :'+newTag.name);
+  let list_of_displayed_tags=[];
+  let list=document.querySelectorAll(".aTag");
+  list.forEach(displayed_tag => {
+    let aTag=new Tag(displayed_tag.textContent,displayed_tag.classList[1]);
+    list_of_displayed_tags.push(aTag);
+  });
+  list_of_displayed_tags.push(newTag);
+  list_of_displayed_tags=[... new Set(list_of_displayed_tags)];
+  tagCardHtml='';
+  for (let i=0; i<list_of_displayed_tags.length;i++){
+    tagCardHtml+=`<span class="aTag ${list_of_displayed_tags[i].type}">${list_of_displayed_tags[i].name}<i class="fas fa-times close_tag"></i></span>`
+  }
+  document.getElementById('tags').innerHTML=tagCardHtml;
+  document.querySelectorAll('.close_tag').forEach(element => {
+    element.addEventListener('click',(e)=>{
+      remove_tag(e,recipies);
+    })
+  });
+  filter_recipies(recipies)
+}
+////////////////////////////////////////////////////////////////////////////////////
+function remove_tag(e,recipies){
+  e.target.parentNode.remove();
+  filter_recipies(recipies)
+}
+////////////////////////////////////////////////////////////////////////////////////
+function erase(e){
+  document.getElementById("search_bar_"+e.target.parentNode.id).value="";
+}
+////////////////////////////////////////////////////////////////////////////////////
+function erase_search_bar(){
+  document.getElementById("search_bar").value="";
+}
+////////////////////////////////////////////////////////////////////////////////////
+function open_modal(name){
+  document.getElementById('chosen_recipe').classList.remove("hidden");
+  document.querySelector('.recipe_content').innerHTML=name;
+  document.getElementById('close_button').addEventListener("click",()=>{
+    document.getElementById('chosen_recipe').classList.add("hidden");
+  })
 }
