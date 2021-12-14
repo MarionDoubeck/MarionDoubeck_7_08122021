@@ -2,7 +2,6 @@ function init_list_of_tags(list_of_recipies){
   console.log('dans init_list_of_tags');
   let list_of_tags=[];
   let tag=new Tag;
-  let len=0;
   for (const recipe of list_of_recipies){
     for(let i=0;i<recipe.ingredients.length;i++){
       tag=new Tag(recipe['ingredients'][i]['ingredient'].toLowerCase(),'ingredients');
@@ -51,6 +50,7 @@ function filter_recipies(recipies){
   let addIt=0;
   for (let recipe of recipies){
     for(let tag of list_of_displayed_tags){
+      tag=tag.toLowerCase();
       if(tag.type=='appliance'){
         item=recipe[tag.type].toLowerCase();
         if (item==tag.name){
@@ -238,7 +238,7 @@ function display_clickable_advanced_field(type,list_of_the_field,recipies){
     if(dont==0){
       let newItem=document.createElement("div");
     newItem.className="tags_in_menu";
-    newItem.textContent=tag.name;
+    newItem.textContent=capitalizeFirstLetter(tag.name);
     document.getElementById(type+'_list').appendChild(newItem); 
     newItem.addEventListener('click',()=>display_tags(list_of_the_field[i],recipies));  
     }
@@ -257,7 +257,7 @@ function display_tags(newTag,recipies){
   list_of_displayed_tags=[... new Set(list_of_displayed_tags)];
   tagCardHtml='';
   for (let i=0; i<list_of_displayed_tags.length;i++){
-    tagCardHtml+=`<span class="aTag ${list_of_displayed_tags[i].type}">${list_of_displayed_tags[i].name}<i class="fas fa-times close_tag"></i></span>`
+    tagCardHtml+=`<span class="aTag ${list_of_displayed_tags[i].type}">${capitalizeFirstLetter(list_of_displayed_tags[i].name)}<i class="fas fa-times close_tag"></i></span>`
   }
   document.getElementById('tags').innerHTML=tagCardHtml;
   document.querySelectorAll('.close_tag').forEach(element => {
@@ -287,4 +287,8 @@ function open_modal(name){
   document.getElementById('close_button').addEventListener("click",()=>{
     document.getElementById('chosen_recipe').classList.add("hidden");
   })
+}
+////////////////////////////////////////////////////////////////////////////////////
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
