@@ -308,17 +308,22 @@ function open_modal(e,recipies){
     }
     let list_of_ingredients=[];
     for (item of recipe.ingredients){
-      list_of_ingredients.push(item.ingredient);
+      list_of_ingredients.push('</br>'+item.ingredient);
     }
     console.log('ici');
     document.querySelector('.recipe_content').innerHTML=`
-    <div>${recipe.name}</div>
-    <div>Pour ${recipe.servings} personnes</div>
-    <div>Temps de préparation : ${recipe.time} minutes</div>
-    <div>Ingredients : ${list_of_ingredients}</div>
-    <div>Appareil : ${recipe.appliance}</div>
-    <div>Ustensiles : ${recipe.ustensils}</div>
-    <div>Instructions : ${recipe.description}</div>
+    <div id="recipe_info">
+      <img id='cooking' src="./cooking.jpg">
+      <div>Pour ${recipe.servings} personne(s)<br></div>
+      <div>Temps de préparation : ${recipe.time} minutes<br></div>
+      <div>Ingredients : ${list_of_ingredients}<br></div>
+      <div>Appareil : ${recipe.appliance}<br></div>
+      <div>Ustensiles : ${recipe.ustensils}<br></div>
+    </div>
+    <div>
+      <div id="modal_name">${recipe.name}</div>
+      <div id="modal_description">${recipe.description}</div>
+    </div>
     `;
   }
   document.getElementById('close_button').addEventListener("click",()=>{
