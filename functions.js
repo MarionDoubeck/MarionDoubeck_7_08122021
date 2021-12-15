@@ -167,7 +167,7 @@ function filter_advanced_search_fields(type,sorted_recipies_list,recipies){
 ////////////////////////////////////////////////////////////////////////////////////
 function filter_advanced_search_fields_from_advanced_search_bar(type,list_of_tags,recipies){
   console.log('dans filter(and display)advanced search fields from advanced search bar');
-  research=document.getElementById('search_bar_'+type).value;
+  research=document.getElementById('search_bar_'+type).value.toLowerCase();
   if(research.length==0){
     filter_recipies(recipies);
   }
