@@ -6,7 +6,7 @@ function init_list_of_tags(list_of_recipies){
     for(let  i=0;i<recipe.ingredients.length;i++){
       tag=new Tag(recipe['ingredients'][i]['ingredient'].toLowerCase(),'ingredients');
       let alreadyIn=0;
-        for(const  k=0;k<list_of_tags.length;k++){
+        for(let  k=0;k<list_of_tags.length;k++){
           if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="ingredients"){
             alreadyIn++;
           }
