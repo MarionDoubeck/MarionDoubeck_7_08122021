@@ -302,7 +302,6 @@ function open_modal(e,recipies){
     }
     document.querySelector('.recipe_content').innerHTML=`
     <div id="recipe_info">
-      <img id='cooking' src="./cooking.jpg">
       <div>Pour ${recipe.servings} personne(s)<br></div>
       <div>Temps de préparation : ${recipe.time} minutes<br></div>
       <div>Ingredients : ${list_of_ingredients}<br></div>
