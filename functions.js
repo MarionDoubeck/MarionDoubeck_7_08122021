@@ -3,7 +3,7 @@ function init_list_of_tags(list_of_recipies){
   let list_of_tags=[];
   let tag=new Tag;
   for(const recipe of list_of_recipies){
-    for(const  i=0;i<recipe.ingredients.length;i++){
+    for(let  i=0;i<recipe.ingredients.length;i++){
       tag=new Tag(recipe['ingredients'][i]['ingredient'].toLowerCase(),'ingredients');
       let alreadyIn=0;
         for(const  k=0;k<list_of_tags.length;k++){
@@ -17,7 +17,7 @@ function init_list_of_tags(list_of_recipies){
     }
     tag=new Tag(recipe['appliance'].toLowerCase(),'appliance');
     let alreadyIn=0;
-    for(const  k=0;k<list_of_tags.length;k++){
+    for(let  k=0;k<list_of_tags.length;k++){
       if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="appliance"){
         alreadyIn++;
       }
@@ -25,7 +25,7 @@ function init_list_of_tags(list_of_recipies){
     if (alreadyIn==0){
       list_of_tags.push(tag);
     }
-    for(const  i=0;i<recipe['ustensils'].length;i++){
+    for(let  i=0;i<recipe['ustensils'].length;i++){
       tag=new Tag(recipe['ustensils'][i].toLowerCase(),'ustensils');
       if(list_of_tags.find(element=>(element.name==tag.name && element.type=='ustensils'))==undefined){
         list_of_tags.push(tag);
@@ -85,7 +85,7 @@ function filter_recipies(recipies){
   }
   let newList2=[];
   number_of_recipies=recipies.length;
-  for (const  i=0;i<number_of_recipies;i++){
+  for (let  i=0;i<number_of_recipies;i++){
     const title=recipies[i].name;
     const ingredients=recipies[i].ingredients;
     const description=recipies[i].description;
@@ -175,9 +175,9 @@ function filter_advanced_search_fields_from_advanced_search_bar(type,list_of_tag
   let list_of_the_field=[];
   for (const tag of list_of_tags){
     if(tag.type==type && research.length<=tag.name.length){
-      for(const i=0;i+research.length<=tag.name.length;i++){
+      for(let i=0;i+research.length<=tag.name.length;i++){
         let test=0;
-        for (const j=0;j<research.length;j++){
+        for (let j=0;j<research.length;j++){
           if(tag.name[i+j]==research[j]){
             test++;
           }
@@ -229,7 +229,7 @@ function display_clickable_advanced_field(type,list_of_the_field,recipies){
     list_of_displayed_tags.push(aTag);
   });
   document.getElementById(type+'_list').innerHTML="";
-  for(const  i=0;i<list_of_the_field.length;i++){;
+  for(let  i=0;i<list_of_the_field.length;i++){;
     let tag=list_of_the_field[i];
     let dont=0;
     for(const aTag of list_of_displayed_tags){
@@ -258,7 +258,7 @@ function display_tags(newTag,recipies){
   list_of_displayed_tags.push(newTag);
   list_of_displayed_tags=[... new Set(list_of_displayed_tags)];
   tagCardHtml='';
-  for (const i=0; i<list_of_displayed_tags.length;i++){
+  for (let i=0; i<list_of_displayed_tags.length;i++){
     tagCardHtml+=`<span class="aTag ${list_of_displayed_tags[i].type}">${capitalizeFirstLetter(list_of_displayed_tags[i].name)}<i class="fas fa-times close_tag"></i></span>`
   }
   document.getElementById('tags').innerHTML=tagCardHtml;
