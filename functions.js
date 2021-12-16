@@ -38,7 +38,7 @@ function init_list_of_tags(list_of_recipies){
       list_of_tags.push(tag);
     }
   }
-  return list_of_tags
+  return list_of_tags;
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function filter_recipies(recipies){
@@ -87,37 +87,36 @@ function filter_recipies(recipies){
   const research=document.getElementById('search_bar').value.toLowerCase();
   if (research.length==0){
     display_recipies(new_list_of_recipies,recipies);
-    return
+    return;
   }
   //build array of terms in titles, descriptions and ingredients of new_list_of_recipies :
   let list_of_research_key_words=[];
   for (const recipe of new_list_of_recipies){
     add_key_word(recipe.name.toLowerCase(),recipe,list_of_research_key_words);
-    for(word of recipe.description.split(' ')){
+    for(const word of recipe.description.split(' ')){
       add_key_word(word.toLowerCase(),recipe,list_of_research_key_words);
     }
-    for(item of recipe.ingredients){
+    for(const item of recipe.ingredients){
       add_key_word(item.ingredient.toLowerCase(),recipe,list_of_research_key_words);
     }
   }
-  console.log(list_of_research_key_words);
   //test search bar by list_of_research_key_words
   let sorted_recipies_list=[];
   const len=research.length;
-  for(item of list_of_research_key_words){
+  for(const item of list_of_research_key_words){
     word=item.word;
     const len2=word.length;
     if(len<=len2){
       for(let i=0;i+len<len2;i++){
         let test=0;
-        for(j=0;j<len;j++){
+        for(let j=0;j<len;j++){
           if(word[i+j]==research[j]){
             test++;
           }
         }
         if (test==len){
           let dont=0;
-          for(recipe of sorted_recipies_list){
+          for(const recipe of sorted_recipies_list){
             if(item.recipe==recipe){
               dont++;
             }
@@ -130,7 +129,6 @@ function filter_recipies(recipies){
     }
   }
   display_recipies(sorted_recipies_list,recipies);
-  return
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function filter_advanced_search_fields(type,sorted_recipies_list,recipies){
