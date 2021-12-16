@@ -4,3 +4,9 @@ class Tag{
     this.type=type;
   }
 }
+class Keyword{
+  constructor(word,recipe){
+    this.word=word;
+    this.recipe=recipe;
+  }
+}

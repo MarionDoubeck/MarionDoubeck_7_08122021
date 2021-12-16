@@ -6,14 +6,14 @@ function init_list_of_tags(list_of_recipies){
     for(let  i=0;i<recipe.ingredients.length;i++){
       tag=new Tag(recipe['ingredients'][i]['ingredient'].toLowerCase(),'ingredients');
       let alreadyIn=0;
-        for(let  k=0;k<list_of_tags.length;k++){
-          if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="ingredients"){
-            alreadyIn++;
-          }
+      for(let  k=0;k<list_of_tags.length;k++){
+        if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="ingredients"){
+          alreadyIn++;
         }
-        if (alreadyIn==0){
-          list_of_tags.push(tag);
-        }
+      }
+      if (alreadyIn==0){
+        list_of_tags.push(tag);
+      }
     }
     tag=new Tag(recipe['appliance'].toLowerCase(),'appliance');
     let alreadyIn=0;
@@ -27,9 +27,15 @@ function init_list_of_tags(list_of_recipies){
     }
     for(let  i=0;i<recipe['ustensils'].length;i++){
       tag=new Tag(recipe['ustensils'][i].toLowerCase(),'ustensils');
-      if(list_of_tags.find(element=>(element.name==tag.name && element.type=='ustensils'))==undefined){
-        list_of_tags.push(tag);
+      let alreadyIn=0;
+      for(let k=0;k<list_of_tags.length;k++){
+        if(list_of_tags[k].name==tag.name && list_of_tags[k].type=="ustensils"){
+          alreadyIn++;
+        }
       }
+    }
+    if (alreadyIn==0){
+      list_of_tags.push(tag);
     }
   }
   return list_of_tags
@@ -45,7 +51,7 @@ function filter_recipies(recipies){
   });
   
   //filter by tags :
-  let newList=[];
+  let new_list_of_recipies=[];
   let item="";
   let addIt=0;
   for (const  recipe of recipies){
@@ -73,36 +79,58 @@ function filter_recipies(recipies){
       }
     }
     if(addIt==list_of_displayed_tags.length){
-      newList.push(recipe);
+      new_list_of_recipies.push(recipe);
     }
     addIt=0;
   }
   //filter par la barre de recherche
-  const research=document.getElementById('search_bar').value;
+  const research=document.getElementById('search_bar').value.toLowerCase();
   if (research.length==0){
-    display_recipies(newList,recipies);
+    display_recipies(new_list_of_recipies,recipies);
     return
   }
-  let newList2=[];
-  number_of_recipies=recipies.length;
-  for (let  i=0;i<number_of_recipies;i++){
-    const title=recipies[i].name;
-    const ingredients=recipies[i].ingredients;
-    const description=recipies[i].description;
-    if (title.includes(research) || ingredients.includes(research) || description.includes(research)){
-      newList2.push(recipies[i]);
+  //build array of terms in titles, descriptions and ingredients of new_list_of_recipies :
+  let list_of_research_key_words=[];
+  for (const recipe of new_list_of_recipies){
+    add_key_word(recipe.name.toLowerCase(),recipe,list_of_research_key_words);
+    for(word of recipe.description.split(' ')){
+      add_key_word(word.toLowerCase(),recipe,list_of_research_key_words);
+    }
+    for(item of recipe.ingredients){
+      add_key_word(item.ingredient.toLowerCase(),recipe,list_of_research_key_words);
     }
   }
+  console.log(list_of_research_key_words);
+  //test search bar by list_of_research_key_words
   let sorted_recipies_list=[];
-  for(const recipe of newList){
-    for(const recipe2 of newList2){
-      if(recipe==recipe2){
-        sorted_recipies_list.push(recipe);
+  const len=research.length;
+  for(item of list_of_research_key_words){
+    word=item.word;
+    const len2=word.length;
+    if(len<=len2){
+      for(let i=0;i+len<len2;i++){
+        let test=0;
+        for(j=0;j<len;j++){
+          if(word[i+j]==research[j]){
+            test++;
+          }
+        }
+        if (test==len){
+          let dont=0;
+          for(recipe of sorted_recipies_list){
+            if(item.recipe==recipe){
+              dont++;
+            }
+          }
+          if(dont==0){
+            sorted_recipies_list.push(item.recipe);
+          }
+        }
       }
     }
   }
-    display_recipies(sorted_recipies_list,recipies);
-    return
+  display_recipies(sorted_recipies_list,recipies);
+  return
 }
 ////////////////////////////////////////////////////////////////////////////////////
 function filter_advanced_search_fields(type,sorted_recipies_list,recipies){
@@ -171,7 +199,6 @@ function filter_advanced_search_fields_from_advanced_search_bar(type,list_of_tag
   if(research.length==0){
     filter_recipies(recipies);
   }
-  let i=0;
   let list_of_the_field=[];
   for (const tag of list_of_tags){
     if(tag.type==type && research.length<=tag.name.length){
